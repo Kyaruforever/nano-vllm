@@ -13,6 +13,7 @@ def load_model(model: nn.Module, path: str):
     packed_modules_mapping = getattr(model, "packed_modules_mapping", {})
     for file in glob(os.path.join(path, "*.safetensors")):
         with safe_open(file, "pt", "cpu") as f:
+            # print(f"{f.keys()=}")
             for weight_name in f.keys():
                 for k in packed_modules_mapping:
                     if k in weight_name:
