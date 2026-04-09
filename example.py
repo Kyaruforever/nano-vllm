@@ -4,12 +4,12 @@ from transformers import AutoTokenizer
 
 import argparse
 
-def main(model_path: str):
-    path = os.path.expanduser(model_path)
+def main(args):
+    path = os.path.expanduser(args.model_path)
     tokenizer = AutoTokenizer.from_pretrained(path)
-    llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)
+    llm = LLM(path, enforce_eager=args.enforce_eager, tensor_parallel_size=args.tensor_parallel_size)
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=256)
+    sampling_params = SamplingParams(temperature=args.temperature, max_tokens=args.max_tokens)
     prompts = [
         "introduce yourself",
         "list all prime numbers within 100",
@@ -29,8 +29,8 @@ def main(model_path: str):
         print(f"Prompt: {prompt!r}")
         print(f"Completion: {output['text']!r}")
 
-# def main(model_path: str):
-#     path = os.path.expanduser(model_path)
+# def main(args):
+#     path = os.path.expanduser(args.model_path)
 #     tokenizer = AutoTokenizer.from_pretrained(path)
 #     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)
 
@@ -54,5 +54,9 @@ def main(model_path: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="nano vllm")
     parser.add_argument("--model_path", type=str, default="~/huggingface/Qwen3-0.6B/", help="model path")
+    parser.add_argument("--enforce_eager", action="store_true", help="enforce eager mode")
+    parser.add_argument("--tensor_parallel_size", "--tp", type=int, default=1, help="tensor parallel size")
+    parser.add_argument("--temperature", type=float, default=0.6, help="sampling temperature")
+    parser.add_argument("--max_tokens", type=int, default=256, help="max tokens to generate")
     args = parser.parse_args()
-    main(args.model_path)
+    main(args)

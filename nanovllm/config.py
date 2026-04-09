@@ -25,11 +25,12 @@ class Config:
         self.max_model_len = min(self.max_model_len, self.hf_config.max_position_embeddings)
         assert self.max_num_batched_tokens >= self.max_model_len
 
-# import argparse
 
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description="read config") 
-#     parser.add_argument("--model", type=str, required=True, help="model path")
-#     args = parser.parse_args()
-#     config = Config(model=args.model)
-#     print(config)
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="read config") 
+    parser.add_argument("--model_path", type=str, required=True, help="model path")
+    args = parser.parse_args()
+    config = Config(model=args.model_path)
+    print(config)
