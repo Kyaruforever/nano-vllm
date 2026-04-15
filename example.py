@@ -7,7 +7,7 @@ import argparse
 def main(args):
     path = os.path.expanduser(args.model_path)
     tokenizer = AutoTokenizer.from_pretrained(path)
-    llm = LLM(path, enforce_eager=args.enforce_eager, tensor_parallel_size=args.tensor_parallel_size)
+    llm = LLM(path, enforce_eager=args.enforce_eager, tensor_parallel_size=args.tensor_parallel_size, kv_quant=args.kv_quant)
 
     sampling_params = SamplingParams(temperature=args.temperature, max_tokens=args.max_tokens)
     prompts = [
@@ -58,5 +58,6 @@ if __name__ == "__main__":
     parser.add_argument("--tensor_parallel_size", "--tp", type=int, default=1, help="tensor parallel size")
     parser.add_argument("--temperature", type=float, default=0.6, help="sampling temperature")
     parser.add_argument("--max_tokens", type=int, default=256, help="max tokens to generate")
+    parser.add_argument("--kv_quant", action="store_true", help="use quantization for kv cache")
     args = parser.parse_args()
     main(args)
