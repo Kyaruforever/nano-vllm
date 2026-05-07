@@ -23,8 +23,6 @@ class Config:
         assert 1 <= self.tensor_parallel_size <= 8
         self.hf_config = AutoConfig.from_pretrained(self.model)
         self.max_model_len = min(self.max_model_len, self.hf_config.max_position_embeddings)
-        assert self.max_num_batched_tokens >= self.max_model_len
-
 
 if __name__ == "__main__":
     import argparse

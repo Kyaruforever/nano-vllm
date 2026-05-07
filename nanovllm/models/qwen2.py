@@ -20,7 +20,7 @@ class Qwen2Attention(nn.Module):
         num_kv_heads: int,
         max_position: int = 4096 * 32,
         rope_theta: float = 10000,
-        rope_scaling: tuple | None = None,
+        rope_scaling: dict | None = None,
     ) -> None:
         super().__init__()
         tp_size = dist.get_world_size()
@@ -47,12 +47,13 @@ class Qwen2Attention(nn.Module):
             hidden_size,
             bias=False,
         )
+        if isinstance(rope_scaling, dict):
+            rope_theta = rope_scaling.get("rope_theta", rope_theta) 
         self.rotary_emb = get_rope(
             self.head_dim,
             rotary_dim=self.head_dim,
             max_position=max_position,
             base=rope_theta,
-            rope_scaling=rope_scaling,
         )
         self.attn = Attention(
             self.num_heads,

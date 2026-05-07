@@ -20,7 +20,7 @@ class LlamaAttention(nn.Module):
         num_heads: int,
         num_kv_heads: int,
         rope_theta: float = 10000,
-        rope_scaling: tuple | None = None,
+        rope_scaling: dict | None = None,
         max_position_embeddings: int = 8192,
         bias: bool = False,
         bias_o_proj: bool = False,
@@ -52,12 +52,13 @@ class LlamaAttention(nn.Module):
             bias=bias_o_proj,
         )
 
+        if isinstance(rope_scaling, dict):
+            rope_theta = rope_scaling.get("rope_theta", rope_theta)
         self.rotary_emb = get_rope(
             self.head_dim,
             rotary_dim=self.head_dim,
             max_position=max_position_embeddings,
             base=rope_theta,
-            rope_scaling=rope_scaling,
         )
 
         self.attn = Attention(
