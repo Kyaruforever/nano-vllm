@@ -139,13 +139,12 @@ class ModelRunner:
         slot_mapping = []
         block_tables = None
         for seq in seqs:
-            seqlen = len(seq)
-            start = min(seq.num_cached_tokens, seqlen - 1)
+            start = seq.num_cached_tokens
             seqlen_q = seq.num_scheduled_tokens
-            seqlen_k = seqlen
             end = start + seqlen_q
-            input_ids.extend(seq.token_ids[start:end])
-            positions.extend(list(range(start, end)))
+            seqlen_k = end
+            input_ids.extend(seq[start:end])
+            positions.extend(range(start, end))
             cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
             cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
             max_seqlen_q = max(seqlen_q, max_seqlen_q)
