@@ -9,6 +9,7 @@ from nanovllm.engine.sequence import Sequence
 from nanovllm.models.llama import LlamaForCausalLM
 from nanovllm.models.qwen2 import Qwen2ForCausalLM
 from nanovllm.models.qwen3 import Qwen3ForCausalLM
+from nanovllm.models.qwen3_moe import Qwen3MoeForCausalLM
 from nanovllm.models.models import model_dict
 from nanovllm.layers.sampler import Sampler
 from nanovllm.utils.context import set_context, get_context, reset_context
@@ -31,7 +32,7 @@ class ModelRunner:
         default_dtype = torch.get_default_dtype()
         torch.set_default_dtype(hf_config.torch_dtype)
         torch.set_default_device("cuda")
-        self.model = model_dict[hf_config.model_type](hf_config)
+        self.model = model_dict[hf_config.model_type](hf_config, block_size=self.block_size)
         load_model(self.model, config.model)
         self.sampler = Sampler()
         self.warmup_model()
